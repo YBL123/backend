@@ -1,36 +1,31 @@
-require('dotenv').config()
 const express = require('express')
+const dotenv = require('dotenv')
 const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
-const app = express()
-const logger = require('./lib/logger')
 const router = require('./config/routes')
-const port = process.env.PORT || 8000
-const dbURI = process.env.MONGODB_URI || 'mongodb://localhost/plants-db3'
+// const errorHandler = require('./lib/errorHandler')
+const connectDB = require('./db/connect')
 
-mongoose.connect(
-  dbURI,
-  { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
-  (err) => {
-    if (err) return console.log(err)
-    console.log('Mongo is Connected')
-  }
-)
+dotenv.config({ path: './config/config.env' })
 
-//! needs to be at the top
-//* __dirname is a magic word meaning the directory your currently in. As after deployment the exact path will be different.
-// app.use(express.static(`${__dirname}/frontend/build`))
+connectDB() //* calling connection here. Comes after dotenv as I am calling process.env within the connectDB function
+
+const app = express()
 
 app.use(bodyParser.json())
 
-app.use(logger)
-
 app.use('/api', router)
 
-//! has to go underneath registering
-//* * on any routes. If not routes match use this.
-//* if any requests attempted that are not api we are sendign a res.sendFile(`${__dirname}/frontend/build/index.html)
-// app.use('/*', (req, res) => res.sendFile(`${__dirname}/frontend/build/index.html`))
+// app.use(errorHandler)  //* errorHandler will receive anything that will come after the controller -> in this case there are 2 options -> 1) asyncHandler, catch/next 2) next within a controller
 
 
-app.listen(port, () => console.log(`App is listening on port ${port}`))
+const PORT = process.env.PORT || 8000 //* this is a fallback incase the process.env file doesn't work
+
+const server = app.listen(PORT, () => console.log(`Express is listening on port ${PORT}`))
+
+//* handle unhandled promise rejections: (node:44800) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated.
+//* unhandled promise rejections cause the server to "hang" -> process.exit allows us to put an end to it
+// //* kills the server
+process.on('unhandledRejection', (err, promise) => {
+  console.log(`err: ${err.message}`)
+  server.close(() => process.exit(1))
+})
