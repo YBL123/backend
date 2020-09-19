@@ -1,27 +1,39 @@
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
-const secret  = process.env.JWT_SECRET
 
 async function signUp(req, res) {
+
   try {
-    const user = await User.create(req.body)
-    res.status(201).json({ message: `${user.email} has been registered` })
+    let query = User.create(req.body)
+    let user = await query
+    
+    query = User.findOne({ _id: user._id })
+    query.select('-_id -__v -id +password')
+
+    user = await query
+  
+    res.status(201).json(user)
   } catch (err) {
+    console.log(err)
     res.status(422).json(err)
   }
 }
-async function signIn(req, res) {
+
+const signIn = async (req, res) =>  {
+  const secret = process.env.JWT_SECRET
   try {
     console.log('user wanted: ', req.body)
     const user = await User.findOne({ email: req.body.email })
     console.log('user found: ', user)
+
     if (!user || !user.validatePassword(req.body.password)) {
       throw new Error()
     }
+
     const token = jwt.sign({ sub: user._id }, secret, { expiresIn: '7 days' })
     
     res.status(202).json({ 
-      message: `Welcome back ${user.name}`,
+      message: `Welcome back ${user.firstName}`,
       token
     })
 
