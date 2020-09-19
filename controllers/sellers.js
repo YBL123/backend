@@ -12,7 +12,8 @@ async function getAllSellers(req, res) {
 // * POST - body = { a valid review object }
 // * URL - api/sellers/:id/reviews
 async function sellersPostReview(req, res, next) {
-  console.log('review created')
+  // console.log('review created')
+  console.log(req.body)
   try {
     // * Find the review that we are creating a review on
     req.body.user = req.currentUser
@@ -20,7 +21,7 @@ async function sellersPostReview(req, res, next) {
     const seller = await User.findById(sellerId)
     if (!seller) throw new Error('notFound')
     // * attach our review object(sent in the request body) to that seller, pushing into its reviews array
-    seller.comments.push(req.body)
+    seller.reviews.push(req.body)
     console.log(seller)
     console.log(req.body)
     // * resave that seller with the new reviews
