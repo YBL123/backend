@@ -33,6 +33,24 @@ async function sellersPostReview(req, res, next) {
   }
 }
 
+async function getSellerReviews(req, res) {
+  const sellerId = req.params.id
+  try {
+    const seller = await (await User.findById(sellerId)).populate({
+      path: 'reviews.user',
+      model: 'User'
+    })
+    if (!seller) throw new Error('notFound')
+    const user = await User.findById(seller.user)
+    seller.user = user
+    res.status(200).json(seller)
+  } catch (err) {
+    res.status(422).json(err)
+  }
+}
+
 module.exports = {
-  getAllSellers, postReview: sellersPostReview
+  getAllSellers, 
+  postReview: sellersPostReview,
+  sellerReviews: getSellerReviews
 }

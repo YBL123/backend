@@ -12,7 +12,11 @@ router.route('/signIn')
 router.route('/sellers')
   .get(sellers.getAllSellers)
 
+router.route('sellers/:id')
+  .get(sellers.sellerReviews)
+
 router.route('/sellers/:id/reviews')
-  .post(secureRoute, sellers.postReview) 
+  .post(secureRoute, sellers.postReview)
+  
 
 module.exports = router
