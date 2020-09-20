@@ -18,5 +18,8 @@ router.route('/sellers/:id')
 router.route('/sellers/:id/reviews')
   .post(secureRoute, sellers.postReview)
   
+router.route('/getNearestSellers')
+  .get(sellers.getNearestSellers)
+
 
 module.exports = router
