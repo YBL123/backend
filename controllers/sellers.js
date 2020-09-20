@@ -12,8 +12,7 @@ async function getAllSellers(req, res) {
 // * POST - body = { a valid review object }
 // * URL - api/sellers/:id/reviews
 async function sellersPostReview(req, res, next) {
-  // console.log('review created')
-  console.log(req.body)
+  console.log('review created')
   try {
     // * Find the review that we are creating a review on
     req.body.user = req.currentUser
