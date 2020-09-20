@@ -80,40 +80,24 @@ async function getNearestSellers(req, res, next) {
   } catch (err){
     console.log(err)
   }
-
-  // try {
-  //   url = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=40.6655101,-73.89188969999998&destinations=40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592%7C40.659569%2C-73.933783%7C40.729029%2C-73.851524%7C40.6860072%2C-73.6334271%7C40.598566%2C-73.7527626%7C40.659569%2C-73.933783%7C40.729029%2C-73.851524%7C40.6860072%2C-73.6334271%7C40.598566%2C-73.7527626&key=AIzaSyBvuOm74SiVKRVJMZRSOjC7F4kYOI7Q1p0'
-
-  //   // url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${51.507351},${-0.127758}|${51.657909},${-0.270480}&key=AIzaSyBq17-wur73MVy-2vi1EcS7mAd6s4O-Z6c`
-  //   currentDistance =  await axios.get(url)
-  
-    
-  // } catch (error) {
-  //   console.log(error)
-  // }
-
-  // console.log(currentDistance)
-
-  // return false
-  
-
   
   Promise.all(sellers.map(seller => {
 
     const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${latitude},${longitude}&destinations=${seller.latitude},${seller.longitude}&key=AIzaSyBvuOm74SiVKRVJMZRSOjC7F4kYOI7Q1p0`
 
     currentDistance = findClosestSeller(url)
-    console.log('cuurentDistance1',currentDistance)
+    console.log('curentDistance1',currentDistance)
 
     // currentDistance = distance.data.rows[0].elements[0].distance.value
-    currentDistance = distance
-    // currentDistance = currentDistance.data
+    // currentDistance = distance
+    const currDistance = currentDistance
 
     if (currentDistance < distance){
       distance = currentDistance
       closestSeller = seller
     }
-    console.log('CurrentDistance2',currentDistance)
+    // console.log('CurrentDistance2',currentDistance)
+    console.log('CurrentDistance2',currDistance)
   }))
 
   if (distance > maxDistance) {
