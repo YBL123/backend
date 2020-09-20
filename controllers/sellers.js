@@ -1,18 +1,6 @@
 const axios = require('axios')
 const User = require('../models/user')
 
-const findClosest = async (url) => {
-  try {
-    const res = await axios.get(url)
-    console.log(res)
-    return res
-  } catch (err) {
-    console.log(err)
-    console.log('error of axios google maps')
-    return 'failed'
-  }
-}
-
 async function getAllSellers(req, res) {
   try {
     const users = await User.find()
@@ -61,12 +49,25 @@ async function getSellerReviews(req, res) {
   }
 }
 
+const findClosestSeller = async (url) => {
+  try {
+    const res = await axios.get(url)
+    console.log(res)
+    return res
+  } catch (err) {
+    console.log(err)
+    console.log('error of axios google maps')
+    return 'failed'
+  }
+}
+
+
 async function getNearestSellers(req, res, next) {
 
-  let url
   let sellers
   let closestSeller
-  let currentDistance = {}
+  // let currentDistance = {}
+  let currentDistance
 
   const maxDistance = req.query.maxDistance
   let distance = maxDistance
@@ -98,22 +99,22 @@ async function getNearestSellers(req, res, next) {
 
   
   Promise.all(sellers.map(seller => {
-    // url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${latitude},${longitude}|${seller.latitude},${seller.longitude}&key=AIzaSyBvuOm74SiVKRVJMZRSOjC7F4kYOI7Q1p0`
 
-    url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${latitude},${longitude}&destinations=${seller.latitude},${seller.longitude}&key=AIzaSyBvuOm74SiVKRVJMZRSOjC7F4kYOI7Q1p0`
+    const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${latitude},${longitude}&destinations=${seller.latitude},${seller.longitude}&key=AIzaSyBvuOm74SiVKRVJMZRSOjC7F4kYOI7Q1p0`
 
-    currentDistance = findClosest(url)
-    console.log(currentDistance.data)
+    currentDistance = findClosestSeller(url)
+    console.log('cuurentDistance1',currentDistance)
 
-    currentDistance = distance.data.rows[0].elements[0].distance.value
+    // currentDistance = distance.data.rows[0].elements[0].distance.value
+    currentDistance = distance
+    // currentDistance = currentDistance.data
 
     if (currentDistance < distance){
       distance = currentDistance
       closestSeller = seller
     }
+    console.log('CurrentDistance2',currentDistance)
   }))
-
-  
 
   if (distance > maxDistance) {
     res.status(400).json({ error: 'Can not find any sellers within the maxDistance provided' })
