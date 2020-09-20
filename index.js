@@ -18,7 +18,7 @@ app.use('/api', router)
 // app.use(errorHandler)  //* errorHandler will receive anything that will come after the controller -> in this case there are 2 options -> 1) asyncHandler, catch/next 2) next within a controller
 
 
-const PORT = process.env.PORT || 8000 //* this is a fallback incase the process.env file doesn't work
+const PORT = process.env.PORT || 8080 //* this is a fallback incase the process.env file doesn't work
 
 const server = app.listen(PORT, () => console.log(`Express is listening on port ${PORT}`))
 
