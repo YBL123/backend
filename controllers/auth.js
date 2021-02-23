@@ -2,7 +2,6 @@ const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 
 async function signUp(req, res) {
-
   try {
     let query = User.create(req.body)
     let user = await query

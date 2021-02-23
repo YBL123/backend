@@ -4,12 +4,7 @@ const bcrypt = require('bcrypt');
 //* each comment has to fit this schema criteria
 const reviewSchema = new mongoose.Schema(
   {
-    reviewValue: {
-      type: Number,
-      enum: [1, 2, 3, 4, 5],
-      default: 1,
-      required: true,
-    },
+    reviewValue: { type: Number, enum: [1, 2, 3, 4, 5], default: 1, required: true, },
     comment: { type: String, required: true },
     user: { type: mongoose.Schema.ObjectId, ref: 'User', required: true },
   },
@@ -25,7 +20,7 @@ const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true, maxlength: 50 },
   lastName: { type: String, required: true, maxlength: 50 },
   address: { type: String, required: true, maxlength: 1000 },
-  typeOfUser: { type: String, renum: ['user', 'client'] },
+  typeOfUser: { type: String, enum: ['user', 'client'] },
   profession: { type: String, required: true, maxlength: 500 },
   longitude: { type: Number, required: true, maxlength: 2000 },
   latitude: { type: Number, required: true, maxlength: 2000 },
